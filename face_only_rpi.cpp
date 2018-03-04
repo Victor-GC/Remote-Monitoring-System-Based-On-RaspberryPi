@@ -12,23 +12,27 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
 
 int main()
 {
-    //VideoCapture cap(0);    //打开默认摄像头
-    //if(!cap.isOpened())
-    //{
-    //    return -1;
-    //}
+    VideoCapture cap(0);    //打开摄像头
+    if(!cap.isOpened())
+    {
+        return -1;
+    }
+	
     Mat frame;
-    Mat edges;
+    //Mat edges;
 
     CascadeClassifier cascade, nestedCascade;
     bool stop = false;
     //训练好的文件名称，放置在可执行文件同目录下
     cascade.load("/home/pi/opencv-3.4.0/data/haarcascades/haarcascade_frontalface_alt.xml");
-   // nestedCascade.load("/home/jeffrey/test/opencv-3.4.0/data/haarcascades/haarcascade_eye.xml");
-    frame = imread("/home/pi/opencv-3.4.0/demo/face_only/lena.jpg");
-    detectAndDraw( frame, cascade,/* nestedCascade,*/2,0 );
-    waitKey(0);
+    //nestedCascade.load("/home/jeffrey/test/opencv-3.4.0/data/haarcascades/haarcascade_eye.xml");
     
+	//frame = imread("/home/pi/opencv-3.4.0/demo/face_only/lena.jpg");
+    cap>>frame;//读取摄像头的当前帧
+	
+	detectAndDraw( frame, cascade,/* nestedCascade,*/2,0 );
+    
+	//waitKey(0);
     
     return 0;
 }
@@ -103,7 +107,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
         int radius;
 
         double aspect_ratio = (double)r->width/r->height;
-        cout<<"ratio=" << aspect_ratio << endl;
+        //cout<<"ratio=" << aspect_ratio << endl;
 		if( 0.75 < aspect_ratio && aspect_ratio < 1.3 )
         {
             //标示人脸时在缩小之前的图像上标示，所以这里根据缩放比例换算回去
