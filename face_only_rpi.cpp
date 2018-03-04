@@ -12,7 +12,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade,
 
 int main()
 {
-    VideoCapture cap(0);    //打开摄像头
+    VideoCapture cap(0);    //打开树莓派摄像头
     if(!cap.isOpened())
     {
         return -1;
