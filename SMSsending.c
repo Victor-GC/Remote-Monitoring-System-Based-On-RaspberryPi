@@ -105,21 +105,21 @@ int send_core(char* data, int data_num, char* OKword)
 
 int send_SMS(wchar_t* phone_num, wchar_t* send_data)
 {
-	char* data = "AT+CMGF=1";
+	char* data = "AT+CMGF=1\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Set text model failure!\n");
 		return -1;
 	}
 
-	data = "AT+CSMP=17,167,2,25";
+	data = "AT+CSMP=17,167,2,25\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Set text model parameter failure!\n");
 		return -1;
 	}
 
-	data = "AT+CSCS=\"UCS2\"";
+	data = "AT+CSCS=\"UCS2\"\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Set UCS2 failure!\n");
@@ -166,63 +166,63 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
 
 int MMS_init()
 {
-	char* data = "AT+CMMSINIT";
+	char* data = "AT+CMMSINIT\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Init MMS model failure!\n");
 		return -1;
 	}
 
-	data = "AT+CMMSCURL=\"mmsc.monternet.com\"";
+	data = "AT+CMMSCURL=\"mmsc.monternet.com\"\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("URL set failure!\n");
 		return -1;
 	}
 
-	data = "AT+CMMSCID=1";
+	data = "AT+CMMSCID=1\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("ID failure!\n");
 		return -1;
 	}
 
-	data = "AT+CMMSPROTO=\"10.0.0.172\",80";
+	data = "AT+CMMSPROTO=\"10.0.0.172\",80\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("IP and port set failure!\n");
 		return -1;
 	}
 
-	data = "AT+CMMSSENDCFG=6,3,0,0,2,4";
+	data = "AT+CMMSSENDCFG=6,3,0,0,2,4\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("PDU parameters set failure!\n");
 		return -1;
 	}
 
-	data = "AT+SAPBR=3,1,\"Contype\",\"GPRS\"";
+	data = "AT+SAPBR=3,1,\"Contype\",\"GPRS\"\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Contype and GPRS set failure!\n");
 		return -1;
 	}
 
-	data = "AT+SAPBR=3,1,\"APN\",\"CMWAP\"";
+	data = "AT+SAPBR=3,1,\"APN\",\"CMWAP\"\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("APN and CMWAP set failure!\n");
 		return -1;
 	}
 
-	data = "AT+SAPBR=1,1";
+	data = "AT+SAPBR=1,1\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Activate failure!\n");
 		return -1;
 	}
 
-	data = "AT+SAPBR=2,1";
+	data = "AT+SAPBR=2,1\r\n";
 	if(-1 == send_core(data, strlen(data), "+SAPBR:1,1,\"10.3.126.164\""))
 	{
 		printf("State incorrect!\n");
@@ -232,9 +232,9 @@ int MMS_init()
 	return 1;
 }
 
-int send_MMS(char* phone_num)
+int send_MMS(char* phone_num, const Mat& pic)
 {
-	char* data = "AT+CMMSEDIT=1";
+	char* data = "AT+CMMSEDIT=1\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Enter edit model failure!\n");
@@ -244,7 +244,7 @@ int send_MMS(char* phone_num)
 	int i;
 	for(i = 0; i < 4; ++i)
 	{
-		data = "AT+CMMSDOWN=\"PIC\",6186,40000\n";
+		data = "AT+CMMSDOWN=\"PIC\",6186,40000\r\n";
 		if(1 == send_core(data, strlen(data), "CONNECT"))
 		{
 			break;
@@ -262,21 +262,21 @@ int send_MMS(char* phone_num)
 	char phone_num_data[80];
 	strcpy(phone_num_data,"AT+CMMSRECO=\"");
 	strcat(phone_num_data,phone_num);
-	strcpy(phone_num_data,"\"");
+	strcpy(phone_num_data,"\"\r\n");
 	if(-1 == send_core(phone_num_data, strlen(phone_num_data), "OK"))
 	{
 		printf("Set phone number failure!\n");
 		return -1;
 	}
 
-	data = "AT+CMMSSEND";
+	data = "AT+CMMSSEND\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Send MMS failure!\n");
 		return -1;
 	}
 
-	data = "AT+CMMSEDIT=0";
+	data = "AT+CMMSEDIT=0\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Exit edit model failure!\n");
@@ -287,14 +287,14 @@ int send_MMS(char* phone_num)
 
 int Close_MMS()
 {
-	char* data = "AT+SAPBR=0,1";
+	char* data = "AT+SAPBR=0,1\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Exit SAPBR failure!\n");
 		return -1;
 	}
 
-	data = "AT+CMMSTERM";
+	data = "AT+CMMSTERM\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Exit MMS model failure!\n");
