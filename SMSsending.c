@@ -127,7 +127,7 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
 	}
 
 	unsigned int *p = (wchar_t *)phone_num;
-	data = (char*)malloc(4 * wcslen(phone_num));
+	data = (char*)malloc(4 * wcslen(phone_num)+10);
 	int i;
 	int j;
 	for (i = 0, j = 0; i < wcslen(phone_num); i++)
