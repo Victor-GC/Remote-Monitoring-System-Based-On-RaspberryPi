@@ -1,0 +1,53 @@
+树莓派Opencv开发环境搭建说明
+1. 源更新
+由于依赖项中的libgtk2.0-dev在官方源之下安装会报错，可以改用清华大学源。
+修改/etc/apt/sources.list文件，将原文件内容注释，改为：
+deb http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ stretch main contrib non-free rpi
+deb-src http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ stretch main contrib non-free rpi
+2. 安装依赖项
+sudo apt-get install build-essential
+sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev  
+sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+3. 下载opencv源代码
+在官网下载源代码https://opencv.org/，这里选择的是3.4.0版本。
+将下载好的源代码解压后保存本地，这里选择保存在/home/pi/opencv-3.4.0下
+4. 编译源码
+在/opencv-3.4.0/目录下 
+mkdir build
+cd build
+cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local ..
+注意命令行最后面 .. 不要忘了
+sudo make -j8
+该命令表示进行8线程编译，理论上可以加快编译速度，但本人无论是在ubuntn还是在树莓派上进行编译都会在编译一半的时候报错。故这里没有采用多线程编译加速，没有加入 -j8 这个参数，直接编译。
+sudo make install
+编译完成后就是进行安装，需要较长时间，耐心等待。注意树莓派的散热（本人就出现编译时间久了，树莓派发热断开连接，而且无法再启动。）
+5. 参看版本
+pkg-config --modversion opencv
+可以看到Opencv-3.4.0，环境搭建安装完成。
+6. 编写Cmake
+可以新建一个CMakeLists.txt文件，用于生成Makefile
+cmake_minimum_required(VERSION 2.8)
+project( face_only_rpi )
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( face_only_rpi face_only_rpi.cpp )
+target_link_libraries( face_only_rpi ${OpenCV_LIBS} )
+	执行以下命令
+	cmake .
+	make
+./face_only_rpi
+程序运行。
+
+
+树莓派下用opencv读取自带CSI摄像头说明
+（由于手上没有摄像头，还未实践）
+使用USB摄像头在树莓派下可以直接识别，但若使用自带的CSI摄像头则会出现/dev/目录下没有设备节点。解决方法：
+打开/etc/下面的modules-load.d/modules.conf
+在最后添加一行 bcm2835-v4l2
+意思是在系统启动之后加载bcm2835-v4l2这个模块
+然后重启，会发现/dev/下面发现video0设备节点，opencv就能正常调用了。
+
+参考：
+http://blog.csdn.net/Deiki/article/details/71123947
+http://blog.csdn.net/u012526003/article/details/52801211
+
