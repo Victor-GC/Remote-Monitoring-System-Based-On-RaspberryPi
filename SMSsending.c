@@ -112,7 +112,7 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
 		return -1;
 	}
 
-	data = "AT+CSMP=17,167,2,25\r\n";
+	data = " AT+CSMP=17,167,1,8\r\n";
 	if(-1 == send_core(data, strlen(data), "OK"))
 	{
 		printf("Set text model parameter failure!\n");
@@ -127,13 +127,16 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
 	}
 
 	unsigned int *p = (wchar_t *)phone_num;
-	data = (char*)malloc(4 * wcslen(phone_num)+10);
+	data = (char*)malloc(4 * wcslen(phone_num) + 12);
+	strcpy(data, "AT+CMGS=\"");//初始化设置号码的AT指令的前半段
 	int i;
 	int j;
-	for (i = 0, j = 0; i < wcslen(phone_num); i++)
+	for (i = 0, j = 10; i < wcslen(phone_num); i++)
 	{
 		j += sprintf(data + j, "%.4x", p[i]);
 	}
+	strcpy(data + j, "\"\r\n");//初始化设置号码的AT指令的结尾
+
 	if(-1 == send_core(data, strlen(data), ">"))
 	{
 		printf("Set phone number failure!\n");
@@ -142,12 +145,13 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
 	free(data);
 
 	p = (wchar_t *)send_data;
-	data = (char*)malloc(4 * wcslen(send_data);
+	data = (char*)malloc(4 * wcslen(send_data) + 1);
 	for (i = 0, j = 0; i < wcslen(send_data); i++)
 	{
 		j += sprintf(data + j, "%.4x", p[i]);
 	}
-	
+	data + j = 0x1A;//写入结束符0x1A
+
 	if(-1 == send_core(data, strlen(data), "+CMGS: "))
 	{
 		printf("Write send data failure!\n");
@@ -155,12 +159,6 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
 	}
 	free(data);
 
-	char end_index = 0X1A;
-	if(-1 == send_core(end_index, 1, "OK"))
-	{
-		printf("Send SMS failure!\n");
-		return -1;
-	}
 	return 1;
 }
 
@@ -260,7 +258,7 @@ int send_MMS(char* phone_num, const Mat& pic)
 
 
 	char phone_num_data[80];
-	strcpy(phone_num_data,"AT+CMMSRECO=\"");
+	strcpy(phone_num_data,"AT+CMMSRECP=\"");
 	strcat(phone_num_data,phone_num);
 	strcpy(phone_num_data,"\"\r\n");
 	if(-1 == send_core(phone_num_data, strlen(phone_num_data), "OK"))
