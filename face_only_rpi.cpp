@@ -33,7 +33,7 @@ int main()
 		cap >> frame;
 		
 		if (frame.empty())
-			cout<<"Fail to capture frame!"<<endl;
+			cout << "Fail to capture frame!" << endl;
 		else
 			imwrite("test.jpg", frame); //保存当前摄像头捕捉到的图片至当前文件夹下
 		
@@ -42,21 +42,21 @@ int main()
 		
 		if (number_of_face >= 1)
 		{
-			cout<<"Attention!"<<endl;
+			cout << "Attention!" << endl;
 			/*触发报警部分功能*/
 			
 		}
 		else
 		{
-			cout<<"Don't worry"<<endl;
+			cout << "Don't worry" << endl;
 		}
 		
 		//删除保存的图片
 		int result_delete = remove("./test.jpg");
 		if (!result_delete)
-			cout<<"delete succeeded"<<endl;
+			cout << "delete succeeded" << endl;
 		else
-			cout<<"delete failed"<<endl;
+			cout << "delete failed" << endl;
 		
 		//27是键盘按下esc时，计算机收到的ascii码值，waitKey(30)表示等待30ms
 		//在实际运行过程中，控制台是无法接受到waitkey的键值的，只有在显示的图像上才能收到键值
@@ -158,6 +158,6 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     }
     //imshow( "识别结果", img );
 	//调试使用，输出检测到的人脸数量
-    cout<<"The number of detected faces is "<<faces.size()<<endl;
+    cout << "The number of detected faces is " << faces.size()<<endl;
 	return faces.size();
 }
