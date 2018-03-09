@@ -12,7 +12,8 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "http_work.h"
-
+//局域网内访问网址为：http://你的树莓派ip地址:8090/index.html
+//如树莓派ip为192.168.137.117，则访问网址为：http://192.168.137.117:8090/index.html
 
 char LOGBUF[1024];
 
