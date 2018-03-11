@@ -259,7 +259,7 @@ if(-1 == send_core(data, strlen(data), "\r\nOK\r\n"))
     return 1;
 }
 
-int send_MMS(char* phone_num)
+int send_MMS(char* phone_num, char* image, int image_size)
 {
     char* data = "AT+CMMSEDIT=1\r\n";
     if(-1 == send_core(data, strlen(data), "\r\nOK\r\n"))
@@ -271,7 +271,12 @@ int send_MMS(char* phone_num)
     int i;
     for(i = 0; i < 4; ++i)
     {
-        data = "AT+CMMSDOWN=\"PIC\",6186,40000\r\n";
+        char tempdata[80];
+        strcat(tempdata,"AT+CMMSDOWN=\"PIC\",");
+        char tempsize[20];
+        itoa(image_size, tempsize, 10);
+        strcat(tempdata, tempsize);
+        data = strcat(tempdata, ",40000\r\n");
         if(1 == send_core(data, strlen(data), "\r\nCONNECT\r\n"))
         {
             break;
@@ -284,6 +289,11 @@ int send_MMS(char* phone_num)
     }
 
     /*TODO:发送图片*/
+    if(-1 == send_core(image, image_size, "\r\nOK\r\n"))
+    {
+        printf("Send picture failure!\n");
+        return 0;
+    }
 
 
     char phone_num_data[80];
