@@ -115,6 +115,7 @@ int send_core(char* data, int data_num, char* OKword)
     read(fd, rdata, strlen(OKword));
     if(0 != strcmp(OKword, rdata))
     {
+        printf("OKword:%s\nrdata:%s\n", rdata, OKword);
         free(rdata);
         return -1;
     }
@@ -170,16 +171,23 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
     {
         j += sprintf(data + j, "%.4x", p[i]);
     }
-    *(data + j) = 0x1A;//写入结束符0x1A
-
-    if(-1 == send_core(data, strlen(data), "\r\n+CMGS: "))
+    *(data + j) = 0x1A;
+    if(-1 == send_core(data, strlen(data), "\r\n>"))
     {
         printf("Write send data failure!\n");
         free(data);
         return 0;
     }
-free(data);
-
+    free(data);
+    
+    char tempdata =0x1A;
+    if(-1 == send_core(&tempdata, 1, "\r\n+CMGS"))
+    {
+        printf("Write send data failure!\n");
+        return 0;
+    }
+    
+    
     return 1;
 }
 
