@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
 #include "SMSsending.h"
 
 
@@ -18,6 +22,18 @@ int main(int argc, char *argv[])
     {
         printf("发送短信失败！\n");
     }
-    
+
+
+    MMS_init();
+    Mat picture;
+    IplImage *input = cvCloneImage(picture);
+    char *image = input->imageData;
+    if(!send_MMS(phone_num, image, image_size))
+    {
+        printf("发送彩信失败！\n");
+    }
+
+    Close_MMS();
+
     return 0;
 }
