@@ -8,61 +8,61 @@
 #include <sys/stat.h> 
 #include <wchar.h>
 
-int fd;//串口符号句柄
-int send_core(char* data, int data_num, char* OKword);
+    int fd;//串口符号句柄
+    int send_core(char* data, int data_num, char* OKword);
 
-int SMSsending_init(char* port)//初始化与短信模块的通信
-{
-    fd = open(port, O_RDWR|O_NOCTTY|O_NDELAY);    
-    if (-1 == fd)    
-    {    
-        perror("Can't Open Serial Port");    
-        return 0;    
-    }    
-    //恢复串口为阻塞状态                                   
-    if(fcntl(fd, F_SETFL, 0) < 0)    
-    {    
-        printf("fcntl failed!\n");    
-        return 0;    
-    }         
-    else    
-    {    
-        printf("fcntl=%d\n",fcntl(fd, F_SETFL,0));    
-    }    
-    //测试是否为终端设备        
-    if(0 == isatty(STDIN_FILENO))    
-    {    
-        printf("standard input is not a terminal device\n");    
-        return 0;    
-    }    
-    else    
-    {    
-        printf("isatty success!\n");    
-    }                  
-    printf("fd->open=%d\n",fd);
+    int SMSsending_init(char* port)//初始化与短信模块的通信
+    {
+        fd = open(port, O_RDWR|O_NOCTTY|O_NDELAY);    
+        if (-1 == fd)    
+        {    
+            perror("Can't Open Serial Port");    
+            return 0;    
+        }    
+        //恢复串口为阻塞状态                                   
+        if(fcntl(fd, F_SETFL, 0) < 0)    
+        {    
+            printf("fcntl failed!\n");    
+            return 0;    
+        }         
+        else    
+        {    
+            printf("fcntl=%d\n",fcntl(fd, F_SETFL,0));    
+        }    
+        //测试是否为终端设备        
+        if(0 == isatty(STDIN_FILENO))    
+        {    
+            printf("standard input is not a terminal device\n");    
+            return 0;    
+        }    
+        else    
+        {    
+            printf("isatty success!\n");    
+        }                  
+        printf("fd->open=%d\n",fd);
 
 
-    struct termios options;    
+        struct termios options;    
 
-    /*tcgetattr(fd,&options)得到与fd指向对象的相关参数，并将它们保存于options,该函数还可以测试配置是否正确，该串口是否可用等。若调用成功，函数返回值为0，若调用失败，函数返回值为1.*/    
-    if( tcgetattr( fd,&options)  !=  0)    
-    {    
-        perror("SetupSerial 1");        
-        return 0;     
-    }    
+        /*tcgetattr(fd,&options)得到与fd指向对象的相关参数，并将它们保存于options,该函数还可以测试配置是否正确，该串口是否可用等。若调用成功，函数返回值为0，若调用失败，函数返回值为1.*/    
+        if( tcgetattr( fd,&options)  !=  0)    
+        {    
+            perror("SetupSerial 1");        
+            return 0;     
+        }    
 
-    //设置串口输入波特率和输出波特率    
-    cfsetispeed(&options, 115200);     
-    cfsetospeed(&options, 115200);      
+        //设置串口输入波特率和输出波特率    
+        cfsetispeed(&options, 115200);     
+        cfsetospeed(&options, 115200);      
 
-    //修改控制模式，保证程序不会占用串口    
-    options.c_cflag |= CLOCAL;    
-    //修改控制模式，使得能够从串口中读取输入数据    
-    options.c_cflag |= CREAD;    
+        //修改控制模式，保证程序不会占用串口    
+        options.c_cflag |= CLOCAL;    
+        //修改控制模式，使得能够从串口中读取输入数据    
+        options.c_cflag |= CREAD;    
 
-    //设置数据流控制    
-    //不使用流控制    
-    options.c_cflag &= ~CRTSCTS;    
+        //设置数据流控制    
+        //不使用流控制    
+        options.c_cflag &= ~CRTSCTS;    
 
     //设置数据位    
     //屏蔽其他标志位    
@@ -115,7 +115,7 @@ int send_core(char* data, int data_num, char* OKword)
     read(fd, rdata, strlen(OKword));
     if(0 != strcmp(OKword, rdata))
     {
-        printf("OKword:%s\nrdata:%s\n", rdata, OKword);
+        printf("发送内容:%s\nOKword:%s\nrdata:%s\n", data, OKword, rdata);
         free(rdata);
         return -1;
     }
@@ -146,7 +146,7 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
         return 0;
     }
 
-    unsigned int *p = (wchar_t *)phone_num;
+    unsigned int *p = (unsigned int*)phone_num;
     data = (char*)malloc(4 * wcslen(phone_num) + 12);
     strcpy(data, "AT+CMGS=\"");//初始化设置号码的AT指令的前半段
     int i;
@@ -165,7 +165,7 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
     }
     free(data);
 
-    p = (wchar_t *)send_data;
+    p = (unsigned int*)send_data;
     data = (char*)malloc(4 * wcslen(send_data) + 1);
     for (i = 0, j = 0; i < wcslen(send_data); i++)
     {
@@ -178,16 +178,16 @@ int send_SMS(wchar_t* phone_num, wchar_t* send_data)
         free(data);
         return 0;
     }
-    free(data);
-    
+free(data);
+
     char tempdata =0x1A;
     if(-1 == send_core(&tempdata, 1, "\r\n+CMGS"))
     {
         printf("Write send data failure!\n");
         return 0;
     }
-    
-    
+
+
     return 1;
 }
 
@@ -250,7 +250,7 @@ if(-1 == send_core(data, strlen(data), "\r\nOK\r\n"))
 }
 
     data = "AT+SAPBR=2,1\r\n";
-    if(-1 == send_core(data, strlen(data), "\r\n+SAPBR:1,1,\"10.3.126.164\"\r\n"))
+    if(-1 == send_core(data, strlen(data), "\r\n+SAPBR:1,1,\"10.24.155.234\"\r\n"))
     {
         printf("State incorrect!\n");
         return 0;
@@ -274,7 +274,7 @@ int send_MMS(char* phone_num, char* image, int image_size)
         char tempdata[80];
         strcat(tempdata,"AT+CMMSDOWN=\"PIC\",");
         char tempsize[20];
-        itoa(image_size, tempsize, 10);
+        sprintf(tempsize, "%d", image_size);
         strcat(tempdata, tempsize);
         data = strcat(tempdata, ",40000\r\n");
         if(1 == send_core(data, strlen(data), "\r\nCONNECT\r\n"))
@@ -339,3 +339,4 @@ int Close_MMS()
     }
     return 1;
 }
+

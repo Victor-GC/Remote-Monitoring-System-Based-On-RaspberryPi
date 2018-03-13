@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/Demo.dir/main.cc.o CMakeFiles/Demo.dir/SMSsending.c.o  -o Demo -rdynamic 

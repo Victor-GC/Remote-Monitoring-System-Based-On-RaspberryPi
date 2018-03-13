@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mylove-chloe/桌面/Remote-Monitoring-System-Based-On-RaspberryPi/SMSsending.c
+stdio.h
+-
+stdlib.h
+-
+fcntl.h
+-
+termios.h
+-
+string.h
+-
+unistd.h
+-
+sys/types.h
+-
+sys/stat.h
+-
+wchar.h
+-
+
