@@ -29,6 +29,8 @@ int main()
     /*变量参数准备*/
     Mat frame; //用于保存摄像头采集得到的图片
     int number_of_face = 0;  //识别出的人脸数量
+    int alarm_flag = 0;  //设置报警标志位
+    int number_of_alarm = 0; //连续检测出人脸的次数
     CascadeClassifier cascade; //分类器
 
     /*http服务器设置所需参数*/
@@ -74,14 +76,23 @@ int main()
         cap >> frame;
 
         if (frame.empty())
-        cout << "Fail to capture frame!" << endl;
+            cout << "Fail to capture frame!" << endl;
         else
-        imwrite("test.jpg", frame); //保存当前摄像头捕捉到的图片至当前文件夹下
+            imwrite("test.jpg", frame); //保存当前摄像头捕捉到的图片至当前文件夹下
 
         //进行人脸检测
         number_of_face = detectAndDraw( frame, cascade, 2, 0 );
-
+        
         if (number_of_face >= 1)
+            number_of_alarm++;
+		else
+            number_of_alarm = 0;
+		if (number_of_alarm == 5)
+        {
+            alarm_flag = 1;
+            number_of_alarm = 0;			
+		}
+        if (alarm_flag)
         {
             cout << "Attention!" << endl;
 
@@ -125,6 +136,7 @@ int main()
 
             /*报警结束后延迟1秒*/
             sleep(1);
+			alarm_flag = 0;
         }
         else
         {
@@ -233,8 +245,8 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             faces.push_back(Rect(smallImg.cols - r->x - r->width, r->y, r->width, r->height));
         }
     }
-t = (double)cvGetTickCount() - t;
-printf( "detection time = %g ms\n", t/((double)cvGetTickFrequency()*1000.) );
+    t = (double)cvGetTickCount() - t;
+    printf( "detection time = %g ms\n", t/((double)cvGetTickFrequency()*1000.) );
 
     //用于在图片上标记出人脸位置
     for( vector<Rect>::const_iterator r = faces.begin(); r != faces.end(); r++, i++ )
