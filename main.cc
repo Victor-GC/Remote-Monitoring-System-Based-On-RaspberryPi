@@ -20,10 +20,10 @@ int main(int argc, char *argv[])
     wchar_t* phone_num = L"15765545478";
     wchar_t* send_data = L"测试一下，看行不行！";
 
-    /* if(!send_SMS(phone_num, send_data))
+    if(!send_SMS(phone_num, send_data))
     {
-    printf("发送短信失败！\n");
-}*/
+        printf("发送短信失败！\n");
+    }
 
 
     if(!MMS_init())
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     {
         printf("发送彩信失败！\n");
     }
-    free(image);
+free(image);
 
     Close_MMS();
     return 0;

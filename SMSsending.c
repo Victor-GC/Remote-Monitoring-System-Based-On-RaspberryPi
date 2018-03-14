@@ -123,7 +123,6 @@ int send_core(char* data, int data_num, char* OKword)
     char* rdata = (char*)malloc(rdata_size);
     memset(rdata, 0, rdata_size);
 
-
     read(fd, rdata, rdata_size);
     
     if(NULL == strstr(rdata, OKword))
@@ -140,6 +139,22 @@ int send_core(char* data, int data_num, char* OKword)
 int send_pic(char* data, int data_num, char* OKword)
 {
     int writed = write(fd, data, data_num);
+    
+    int rdata_size = data_num + strlen(OKword) + 4;
+    char* rdata = (char*)malloc(rdata_size);
+    memset(rdata, 0, rdata_size);
+
+    read(fd, rdata, rdata_size);
+    
+    if(NULL == strstr(rdata, OKword))
+    {
+        printf("发送内容:%s\nrdata:%s\n", data, rdata);
+        free(rdata);
+        return -1;
+    }
+    free(rdata);
+    
+    
     return writed;
 }
 
@@ -327,7 +342,7 @@ int send_MMS(char* phone_num, char* image, int image_size)
     memset(phone_num_data, 0, 80);
     strcpy(phone_num_data,"AT+CMMSRECP=\"");
     strcat(phone_num_data,phone_num);
-    strcpy(phone_num_data,"\"");
+    strcat(phone_num_data,"\"");
     if(-1 == send_core(phone_num_data, strlen(phone_num_data), "OK"))
     {
         printf("Set phone number failure!\n");
