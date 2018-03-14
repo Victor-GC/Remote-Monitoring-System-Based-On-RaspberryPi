@@ -1,3 +1,0 @@
-/home/mylove-chloe/桌面/Remote-Monitoring-System-Based-On-RaspberryPi/CMakeFiles/edit_cache.dir
-/home/mylove-chloe/桌面/Remote-Monitoring-System-Based-On-RaspberryPi/CMakeFiles/rebuild_cache.dir
-/home/mylove-chloe/桌面/Remote-Monitoring-System-Based-On-RaspberryPi/CMakeFiles/RemoteMonit.dir

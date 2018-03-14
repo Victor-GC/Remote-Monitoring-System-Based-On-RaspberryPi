@@ -12,7 +12,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    if(!SMSsending_init("/dev/ttyUSB1"))//报警模块初始化
+    if(!SMSsending_init("/dev/ttyUSB0"))//报警模块初始化
     {
         printf("SerialPort open failed!\n");
         return 0;
@@ -20,10 +20,10 @@ int main(int argc, char *argv[])
     wchar_t* phone_num = L"15765545478";
     wchar_t* send_data = L"测试一下，看行不行！";
 
-  /* if(!send_SMS(phone_num, send_data))
+    /* if(!send_SMS(phone_num, send_data))
     {
-        printf("发送短信失败！\n");
-    }*/
+    printf("发送短信失败！\n");
+}*/
 
 
     if(!MMS_init())
@@ -32,18 +32,38 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    Mat picture;
+    /*Mat picture;
     picture = imread("/home/mylove-chloe/桌面/Remote-Monitoring-System-Based-On-RaspberryPi/111.jpg");
     IplImage tempinput1 = IplImage(picture);
     IplImage *tempinput = &tempinput1;
     IplImage *input = cvCloneImage(tempinput);
     char *image = input->imageData;
-    int image_size = input->imageSize;
+    int image_size = input->imageSize;*/
+
+    FILE *fp = fopen("/home/mylove-chloe/桌面/Remote-Monitoring-System-Based-On-RaspberryPi/111.jpg","r");
+    fseek(fp, 0, SEEK_END);//将文件位置指针置于文件结尾
+    int image_size = ftell(fp);
+    char* image = (char*)malloc(image_size); 
+    fseek(fp, 0, SEEK_SET);
+
+    int got_size = 0;
+    while(!feof(fp)) 
+    {
+        image[got_size] = fgetc(fp);
+        ++got_size;
+    }
+    if(got_size -1 != image_size)
+    {
+        printf("文件大小不一致！\n");
+        printf("image_size:%d\ngot_size:%d\n", image_size, got_size);
+        return 0;
+    }
+
     if(!send_MMS("15765545478", image, image_size))
     {
         printf("发送彩信失败！\n");
-        return 0;
     }
+    free(image);
 
     Close_MMS();
     return 0;

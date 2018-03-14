@@ -137,6 +137,12 @@ int send_core(char* data, int data_num, char* OKword)
     return writed;
 }
 
+int send_pic(char* data, int data_num, char* OKword)
+{
+    int writed = write(fd, data, data_num);
+    return writed;
+}
+
 int send_SMS(wchar_t* phone_num, wchar_t* send_data)
 {
     char* data = "AT+CMGF=1";
@@ -310,7 +316,7 @@ int send_MMS(char* phone_num, char* image, int image_size)
     }
 
     /*TODO:发送图片*/
-    if(-1 == send_core(image, image_size, "OK"))
+    if(-1 == send_pic(image, image_size, "OK"))
     {
         printf("Send picture failure!\n");
         return 0;
