@@ -30,7 +30,7 @@ int main()
     Mat frame; //用于保存摄像头采集得到的图片
     int number_of_face = 0;  //识别出的人脸数量
     CascadeClassifier cascade; //分类器
-	
+
     /*http服务器设置所需参数*/
     int port = 8090;
     int client_sock=-1;
@@ -39,12 +39,13 @@ int main()
     socklen_t client_len = sizeof(client_sockaddr);
     pthread_t newthread;
     server_sock=socket_create(port);//建立socket，监听端口
-	
+
     //加载已训练好的分类模型，注意路径修改
     //使用haarcascade_frontalface_alt或haarcascade_frontalface_alt2分类器 较为严格，只有在正脸的情况下才会检测到
-	//cascade.load("/home/pi/opencv-3.4.0/data/haarcascades/haarcascade_frontalface_alt.xml");
-	//使用haarcascade_frontalface_default分类器条件放松
-	cascade.load("/home/pi/opencv/data/haarcascades/haarcascade_frontalface_default.xml");
+    //cascade.load("/home/pi/opencv-3.4.0/data/haarcascades/h
+    //aarcascade_frontalface_alt.xml");
+    //使用haarcascade_frontalface_default分类器条件放松
+    cascade.load("/home/pi/opencv/data/haarcascades/haarcascade_frontalface_default.xml");
     //打开树莓派摄像头
     VideoCapture cap(0);    
     if (!cap.isOpened())
@@ -58,7 +59,12 @@ int main()
         printf("SerialPort open failed!\n");
         return 0;        
     }
+    if(!MMS_init())
+    {
+        printf("彩信模块初始化失败！\n");
+        return 0;
 
+    }
 
     while (1)
     {
@@ -78,9 +84,9 @@ int main()
         if (number_of_face >= 1)
         {
             cout << "Attention!" << endl;
-            
+
             /*触发报警部分功能*/
-            
+
             /*短信报警部分*/
             wchar_t* phone_num = PHONE_NUM;
             wchar_t* send_data = L"检测到有人闯入，请注意监控区域安全！可远程查看摄像头进一步确认！";
@@ -89,48 +95,79 @@ int main()
                 printf("发送短信失败！\n");
             }
             /*彩信报警部分*/
-			
-			sleep(10);
+            FILE *fp = fopen("test.jpg","r");
+            fseek(fp, 0, SEEK_END);//将文件位置指针置于文件结尾
+            int image_size = ftell(fp);
+            char* image = (char*)malloc(image_size); 
+            fseek(fp, 0, SEEK_SET);
+
+            int got_size = 0;
+            while(!feof(fp)) 
+            {
+                image[got_size] = fgetc(fp);
+                ++got_size;
+
+            }
+            if(got_size -1 != image_size)
+            {
+                printf("文件大小不一致！\n");
+                printf("image_size:%d\ngot_size:%d\n", image_size, got_size);
+                return 0;
+
+            }
+
+            if(!send_MMS("15765545478", image, image_size))
+            {
+                printf("发送彩信失败！\n");
+            }
+            free(image);
+            fclose(fp);
+
+            /*报警结束后延迟1秒*/
+            sleep(1);
         }
         else
         {
             cout << "Don't worry" << endl;
         }
-        
-	//端口监听http请求
-	client_sock = accept(server_sock, (struct sockaddr *) &client_sockaddr, &client_len);
-	if (client_sock == -1)
-	{
-		memset(LOGBUF,0,sizeof(LOGBUF));
-		sprintf(LOGBUF,"%s,%d:accept failture %s \n", __FILE__, __LINE__,strerror(errno));
-		save_log(LOGBUF);
-		return 0;
-	} 
-	else
-	{
-		int *tmp = (int *) malloc(sizeof(int));
-		*tmp = client_sock;
-		pthread_create(&newthread, NULL, http_thread, tmp);//子线程处理http请求
-	}   
-	    
+
+    //端口监听http请求
+    client_sock = accept(server_sock, (struct sockaddr *) &client_sockaddr, &client_len);
+    if (client_sock == -1)
+    {
+        memset(LOGBUF,0,sizeof(LOGBUF));
+        sprintf(LOGBUF,"%s,%d:accept failture %s \n", __FILE__, __LINE__,strerror(errno));
+        save_log(LOGBUF);
+        return 0;
+    } 
+    else
+    {
+        int *tmp = (int *) malloc(sizeof(int));
+        *tmp = client_sock;
+        pthread_create(&newthread, NULL, http_thread, tmp);//子线程处理http请求
+    }   
+
         //删除保存的图片
         int result_delete = remove("./test.jpg");
         if (!result_delete)
         cout << "delete succeeded" << endl;
         else
         cout << "delete failed" << endl;
-	    
-	    
+
+
         //27是键盘按下esc时，计算机收到的ascii码值，waitKey(30)表示等待30ms
         //在实际运行过程中，控制台是无法接受到waitkey的键值的，只有在显示的图像上才能收到键值
         /*if (waitKey(30)==27)
         break;
-        */
+    */
 
         //延时1000ms，用于控制监测实时性
-       // waitKey(1000);
-    }
-    close(server_sock);//程序结束，释放进程资源
+        // waitKey(1000);
+        }
+        close(server_sock);//程序结束，释放进程资
+
+    Close_MMS();//程序结束关闭彩信模块
+
     return 0;
 }
 
@@ -166,18 +203,18 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     t = (double)cvGetTickCount();
     //检测人脸
     //detectMultiScale函数中smallImg表示的是要检测的输入图像为smallImg，faces表示检测到的人脸目标序列，1.1表示每次图像尺寸减小的比例为1.1
-	//4表示每一个目标至少要被检测到4次才算是真的目标(因为周围的像素和不同的窗口大小都可以检测到人脸)
-	//#define CV_HAAR_DO_CANNY_PRUNING 1    //这个值告诉分类器跳过平滑（无边缘）区域
-	//#define CV_HAAR_SCALE_IMAGE 2   //这个值告诉分类器不要缩放分类器，而是缩放图像
-	//#define CV_HAAR_FIND_BIGGEST_OBJECT 4  //告诉分类器只返回最大的目标
-	//#define CV_HAAR_DO_ROUGH_SEARCH 8  //它只能和上面一个参数一起使用，告诉分类器在任何窗口，只要第一个候选者被发现则结束搜寻
-	//Size(35, 35)为目标的最小最大尺寸
+    //4表示每一个目标至少要被检测到4次才算是真的目标(因为周围的像素和不同的窗口大小都可以检测到人脸)
+    //#define CV_HAAR_DO_CANNY_PRUNING 1    //这个值告诉分类器跳过平滑（无边缘）区域
+    //#define CV_HAAR_SCALE_IMAGE 2   //这个值告诉分类器不要缩放分类器，而是缩放图像
+    //#define CV_HAAR_FIND_BIGGEST_OBJECT 4  //告诉分类器只返回最大的目标
+    //#define CV_HAAR_DO_ROUGH_SEARCH 8  //它只能和上面一个参数一起使用，告诉分类器在任何窗口，只要第一个候选者被发现则结束搜寻
+    //Size(35, 35)为目标的最小最大尺寸
     cascade.detectMultiScale( smallImg, faces,
                              1.1, 4, 0
                              //|CV_HAAR_FIND_BIGGEST_OBJECT
                              //|CV_HAAR_DO_ROUGH_SEARCH
                              |CV_HAAR_SCALE_IMAGE
-							 |CV_HAAR_DO_CANNY_PRUNING
+                             |CV_HAAR_DO_CANNY_PRUNING
                              ,Size(35, 35));
     //如果使能，翻转图像继续检测
     if( tryflip )
@@ -189,7 +226,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
                                  //|CV_HAAR_FIND_BIGGEST_OBJECT
                                  //|CV_HAAR_DO_ROUGH_SEARCH
                                  |CV_HAAR_SCALE_IMAGE
-								 |CV_HAAR_DO_CANNY_PRUNING
+                                 |CV_HAAR_DO_CANNY_PRUNING
                                  ,Size(35, 35) );
         for( vector<Rect>::const_iterator r = faces2.begin(); r != faces2.end(); r++ )
         {
