@@ -9,9 +9,10 @@
 #include <wchar.h>
 
     int fd;//串口符号句柄
-    int send_core(char* data, int data_num, char* OKword);
+    int send_core(const char* data, const int data_num, const char* OKword);
+	int send_pic(const char* data, const int data_num, const char* OKword);
 
-    int SMSsending_init(char* port)//初始化与短信模块的通信
+    int SMSsending_init(const char* port)//初始化与短信模块的通信
     {
         fd = open(port, O_RDWR|O_NOCTTY|O_NDELAY);    
         if (-1 == fd)    
@@ -107,7 +108,7 @@
     return 1;
 }
 
-int send_core(char* data, int data_num, char* OKword)
+int send_core(const char* data, const int data_num, const char* OKword)
 {	
     tcflush(fd, TCIFLUSH);//清除接收缓存区
     
@@ -136,7 +137,7 @@ int send_core(char* data, int data_num, char* OKword)
     return writed;
 }
 
-int send_pic(char* data, int data_num, char* OKword)
+int send_pic(const char* data, const int data_num, const char* OKword)
 {
     int writed = write(fd, data, data_num);
     
@@ -158,7 +159,7 @@ int send_pic(char* data, int data_num, char* OKword)
     return writed;
 }
 
-int send_SMS(wchar_t* phone_num, wchar_t* send_data)
+int send_SMS(const wchar_t* phone_num, const wchar_t* send_data)
 {
     char* data = "AT+CMGF=1";
     if(-1 == send_core(data, strlen(data), "OK"))
@@ -294,7 +295,7 @@ if(-1 == send_core(data, strlen(data), "OK"))
     return 1;
 }
 
-int send_MMS(char* phone_num, char* image, int image_size)
+int send_MMS(const char* phone_num, const char* image, const int image_size)
 {
     if(image_size > 307200)
     {

@@ -99,8 +99,8 @@ int main()
             /*触发报警部分功能*/
 
             /*短信报警部分*/
-            wchar_t* phone_num = PHONE_NUM;
-            wchar_t* send_data = L"检测到有人闯入，请注意监控区域安全！可远程查看摄像头进一步确认！";
+            const wchar_t* phone_num = PHONE_NUM;
+            const wchar_t* send_data = L"检测到有人闯入，请注意监控区域安全！可远程查看摄像头进一步确认！";
             if(!send_SMS(phone_num, send_data))
             {
                 printf("发送短信失败！\n");
@@ -126,8 +126,10 @@ int main()
                 return 0;
 
             }
-
-            if(!send_MMS("15765545478", image, image_size))
+			char phone_num_mms[15];
+			memset(phone_num_mms, 0, 15);
+			wcstombs(phone_num_mms, phone_num, 11);
+            if(!send_MMS(phone_num_mms, image, image_size))
             {
                 printf("发送彩信失败！\n");
             }
