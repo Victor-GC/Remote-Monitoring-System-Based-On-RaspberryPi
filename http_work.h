@@ -5,4 +5,4 @@ int socket_create(int port);
 void *http_thread(void *argc);
 void save_log(char *buf);
 
-#endif /* PUB_H_ */
+#endif
