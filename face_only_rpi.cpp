@@ -78,7 +78,7 @@ int main()
         if (frame.empty())
             cout << "Fail to capture frame!" << endl;
         else
-            imwrite("test.jpg", frame); //保存当前摄像头捕捉到的图片至当前文件夹下
+            imwrite("./images/real_image.jpg", frame); //保存当前摄像头捕捉到的图片至当前文件夹下
 
         //进行人脸检测
         number_of_face = detectAndDraw( frame, cascade, 2, 0 );
@@ -145,43 +145,41 @@ int main()
             cout << "Don't worry" << endl;
         }
 
-    //端口监听http请求
-    client_sock = accept(server_sock, (struct sockaddr *) &client_sockaddr, &client_len);
-    if (client_sock == -1)
-    {
-        memset(LOGBUF,0,sizeof(LOGBUF));
-        sprintf(LOGBUF,"%s,%d:accept failture %s \n", __FILE__, __LINE__,strerror(errno));
-        save_log(LOGBUF);
-        return 0;
-    } 
-    else
-    {
-        int *tmp = (int *) malloc(sizeof(int));
-        *tmp = client_sock;
-        pthread_create(&newthread, NULL, http_thread, tmp);//子线程处理http请求
-    }   
+    	//端口监听http请求
+    	client_sock = accept(server_sock, (struct sockaddr *) &client_sockaddr, &client_len);
+    	if (client_sock == -1)
+   	{
+	    memset(LOGBUF,0,sizeof(LOGBUF));
+	    sprintf(LOGBUF,"%s,%d:accept failture %s \n", __FILE__, __LINE__,strerror(errno));
+	    save_log(LOGBUF);
+	    return 0;
+    	} 
+    	else
+    	{
+	    int *tmp = (int *) malloc(sizeof(int));
+	    *tmp = client_sock;
+	    pthread_create(&newthread, NULL, http_thread, tmp);//子线程处理http请求
+    	}   
 
-        //删除保存的图片
-        int result_delete = remove("./test.jpg");
+        //删除保存的图片 :不用删除，图片来的时候自动写入同一个.jpg文件即可
+	/*
+        int result_delete = remove("./images/real_image.jpg");
         if (!result_delete)
         cout << "delete succeeded" << endl;
         else
         cout << "delete failed" << endl;
-
+	*/
 
         //27是键盘按下esc时，计算机收到的ascii码值，waitKey(30)表示等待30ms
         //在实际运行过程中，控制台是无法接受到waitkey的键值的，只有在显示的图像上才能收到键值
         /*if (waitKey(30)==27)
         break;
-    */
-
+    	*/
         //延时1000ms，用于控制监测实时性
         // waitKey(1000);
         }
-        close(server_sock);//程序结束，释放进程资
-
+    close(server_sock);//程序结束，释放进程资
     Close_MMS();//程序结束关闭彩信模块
-
     return 0;
 }
 
