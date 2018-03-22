@@ -9,6 +9,7 @@ SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3 -Wall")
 project (RemoteMonit)
 
 find_package(OpenCV REQUIRED)
+find_package(Threads REQUIRED)
 
 # 查找当前目录下的所有源文件
 # 并将名称保存到 DIR_SRCS 变量
@@ -18,3 +19,4 @@ aux_source_directory(. DIR_SRCS)
 add_executable(RemoteMonit ${DIR_SRCS})
 
 target_link_libraries(RemoteMonit ${OpenCV_LIBS})
+target_link_libraries(RemoteMonit ${CMAKE_THREAD_LIBS_INIT})

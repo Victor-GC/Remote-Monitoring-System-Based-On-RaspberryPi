@@ -58,15 +58,23 @@ int main()
     /*彩信短信报警模块初始化*/
     if(!SMSsending_init("/dev/ttyUSB0"))
     {
-        printf("SerialPort open failed!\n");
+		printf("短信模块串口通信打开失败！\n");
         return 0;        
     }
+	else
+	{
+		printf("短信模块串口通信打开成功！\n");
+	}
+
     if(!MMS_init())
     {
         printf("彩信模块初始化失败！\n");
         return 0;
-
     }
+	else
+	{
+		printf("彩信模块初始化失败！\n");
+	}
 
     while (1)
     {
