@@ -1,6 +1,6 @@
 #include "detect.h"
 
-int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip )
+int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, int neighbor, bool tryflip )
 {
     int i = 0;
     double t = 0;
@@ -39,12 +39,12 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     //#define CV_HAAR_DO_ROUGH_SEARCH 8  //它只能和上面一个参数一起使用，告诉分类器在任何窗口，只要第一个候选者被发现则结束搜寻
     //Size(35, 35)为目标的最小最大尺寸
     cascade.detectMultiScale( smallImg, faces,
-                             1.1, 4, 0
+                             1.1, neighbor, 0
                              //|CV_HAAR_FIND_BIGGEST_OBJECT
                              //|CV_HAAR_DO_ROUGH_SEARCH
                              |CV_HAAR_SCALE_IMAGE
                              |CV_HAAR_DO_CANNY_PRUNING
-                             ,Size(35, 35));
+                             ,Size(35, 35)); 
     //如果使能，翻转图像继续检测
     if( tryflip )
     {
