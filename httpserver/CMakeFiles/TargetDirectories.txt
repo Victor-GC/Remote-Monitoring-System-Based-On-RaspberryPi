@@ -1,0 +1,3 @@
+/home/pi/Desktop/Remote-Monitoring-System-Based-On-RaspberryPi/httpserver/CMakeFiles/edit_cache.dir
+/home/pi/Desktop/Remote-Monitoring-System-Based-On-RaspberryPi/httpserver/CMakeFiles/rebuild_cache.dir
+/home/pi/Desktop/Remote-Monitoring-System-Based-On-RaspberryPi/httpserver/CMakeFiles/RemoteMonit.dir
