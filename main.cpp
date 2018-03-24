@@ -67,14 +67,14 @@ int main()
 	if (!cap.isOpened())
 	{
 		cout << "camera fail!" << endl;
-		return -1;
+		//return -1;
 	}
 
 	/*彩信短信报警模块初始化*/
 	if(!SMSsending_init("/dev/ttyUSB0"))
 	{
 		printf("短信模块串口通信打开失败！\n");
-		return 0;        
+		//return 0;        
 	}
 	else
 	{
@@ -84,7 +84,7 @@ int main()
 	if(!MMS_init())
 	{
 		printf("彩信模块初始化失败！\n");
-		return 0;
+		//return 0;
 	}
 	else
 	{
@@ -104,7 +104,7 @@ int main()
 			imwrite("./images/real_image.jpg", frame); //保存当前摄像头捕捉到的图片至当前文件夹下
 
 		//进行人脸检测
-		number_of_face = detectAndDraw( frame, cascade, 2, 0 );
+		//number_of_face = detectAndDraw( frame, cascade, 2, 0 );
 
 		if (number_of_face >= 1)
 			number_of_alarm++;
