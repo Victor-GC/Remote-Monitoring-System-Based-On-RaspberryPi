@@ -79,12 +79,12 @@ int main()
 			number_of_alarm++;
 		else
 			number_of_alarm = 0;
-		if (number_of_alarm == 5)
+		if (number_of_alarm == 3)
 		{
 			alarm_flag = 1;
 			number_of_alarm = 0;			
 		}
-		if (alarm_flag)
+		if (alarm_flag=0)
 		{
 			cout << "Attention!" << endl;
 
@@ -97,27 +97,7 @@ int main()
 			{
 				printf("发送短信失败！\n");
 			}
-			/*彩信报警部分*/
-			/* FILE *fp = fopen("test.jpg","r");
-			   fseek(fp, 0, SEEK_END);//将文件位置指针置于文件结尾
-			   int image_size = ftell(fp);
-			   char* image = (char*)malloc(image_size); 
-			   fseek(fp, 0, SEEK_SET);
-
-			   int got_size = 0;
-			   while(!feof(fp)) 
-			   {
-			   image[got_size] = fgetc(fp);
-			   ++got_size;
-
-			   }
-			   if(got_size -1 != image_size)
-			   {
-			   printf("文件大小不一致！\n");
-			   printf("image_size:%d\ngot_size:%d\n", image_size, got_size);
-			   return 0;
-
-			   }*/
+			
 			vector<int> jpg_params;
 			jpg_params.push_back(CV_IMWRITE_JPEG_QUALITY);
 			jpg_params.push_back(50);
