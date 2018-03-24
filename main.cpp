@@ -88,7 +88,7 @@ int main()
 			imwrite("./images/real_image.jpg", frame); //保存当前摄像头捕捉到的图片至当前文件夹下
 
 		//进行人脸检测
-		number_of_face = detectAndDraw( frame, cascade, 2, neighbor, 0 );
+		number_of_face = detectAndDraw( frame, cascade, 2, 0 );
 
 		if (number_of_face >= 1)
 			number_of_alarm++;
@@ -136,7 +136,6 @@ int main()
 				printf("发送彩信失败！\n");
 			}
 			free(image);
-			fclose(fp);
 
 			/*报警结束后延迟1秒*/
 			sleep(1);
@@ -180,7 +179,7 @@ int main()
 		//延时1000ms，用于控制监测实时性
 		// waitKey(1000);
 	}
+	Close_MMS();
 	close(server_sock);//程序结束，释放进程资
-	Close_MMS();//程序结束关闭彩信模块
 	return 0;
 }
