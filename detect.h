@@ -15,7 +15,7 @@ using namespace std;
 extern "C"{
 #endif
 
-    int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip );//识别检测
+    int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, int neighbor, bool tryflip );//识别检测
 
 #ifdef __cplusplus
 }
