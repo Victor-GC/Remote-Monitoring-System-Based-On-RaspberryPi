@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -352,4 +353,38 @@ int socket_create(int port)
 	}
 	printf("start server success,running on port %d!\n",port);
 	return httpd;
+}
+
+void *socket_accept(void *argc)
+{
+	int st = *(int *) argc;
+	int client_st;
+	struct sockaddr_in client_sockaddr;
+	socklen_t len = sizeof(client_sockaddr);
+
+	pthread_t thrd_t;
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED); //初始化线程为可分离的
+	memset(&client_sockaddr, 0, sizeof(client_sockaddr));
+
+	while (1)
+	{
+		client_st = accept(st, (struct sockaddr *) &client_sockaddr, &len);
+		if (client_st == -1)
+		{
+			memset(LOGBUF,0,sizeof(LOGBUF));
+			sprintf(LOGBUF,"%s,%d:accept failture %s \n", __FILE__, __LINE__,
+					strerror(errno));
+			save_log(LOGBUF);
+			return 0;
+		} else
+		{
+			int *tmp = (int *) malloc(sizeof(int));
+			*tmp = client_st;
+			pthread_create(&thrd_t, &attr, http_thread, tmp);
+		}
+
+	}
+	pthread_attr_destroy(&attr);//释放资源
 }

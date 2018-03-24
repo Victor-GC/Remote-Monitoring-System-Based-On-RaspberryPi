@@ -6,6 +6,7 @@ extern "C"{
 #endif
 
 	int socket_create(int port);
+	void *socket_accept(void *argc);
 	void *http_thread(void *argc);
 	void save_log(char *buf);
 

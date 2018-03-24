@@ -33,12 +33,28 @@ int main()
 
 	/*http服务器设置所需参数*/
 	int port = 8090;
-	int client_sock=-1;
 	int server_sock=-1;
-	struct sockaddr_in client_sockaddr;
-	socklen_t client_len = sizeof(client_sockaddr);
+	int ret;
 	pthread_t newthread;
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED); //初始化线程为可分离的
 	server_sock=socket_create(port);//建立socket，监听端口
+	if(server_sock==-1)
+	{
+		printf ("Create http_socket error!\n");
+		//exit (1);
+	}
+	else
+	{
+		int *tmp = (int *) malloc(sizeof(int));
+		*tmp = server_sock;
+		ret=pthread_create(&newthread,&attr,socket_accept,tmp);//创建http侦听和服务线程
+		if(ret!=0){
+			printf ("Create http_pthread error!\n");
+			//exit (1);
+		}
+	}
 
 	//加载已训练好的分类模型，注意路径修改
 	//使用haarcascade_frontalface_alt或haarcascade_frontalface_alt2分类器 较为严格，只有在正脸的情况下才会检测到
@@ -146,22 +162,6 @@ int main()
 			cout << "Don't worry" << endl;
 		}
 
-		//端口监听http请求
-		client_sock = accept(server_sock, (struct sockaddr *) &client_sockaddr, &client_len);
-		if (client_sock == -1)
-		{
-			memset(LOGBUF,0,sizeof(LOGBUF));
-			sprintf(LOGBUF,"%s,%d:accept failture %s \n", __FILE__, __LINE__,strerror(errno));
-			save_log(LOGBUF);
-			return 0;
-		} 
-		else
-		{
-			int *tmp = (int *) malloc(sizeof(int));
-			*tmp = client_sock;
-			pthread_create(&newthread, NULL, http_thread, tmp);//子线程处理http请求
-		}   
-
 		//删除保存的图片 :不用删除，图片来的时候自动写入同一个.jpg文件即可
 		/*
 		   int result_delete = remove("./images/real_image.jpg");
@@ -180,6 +180,6 @@ int main()
 		// waitKey(1000);
 	}
 	Close_MMS();
-	close(server_sock);//程序结束，释放进程资
+	pthread_attr_destroy(&attr);//释放资源
 	return 0;
 }
