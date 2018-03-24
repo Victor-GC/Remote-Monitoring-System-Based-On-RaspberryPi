@@ -88,7 +88,7 @@ int main()
 	}
 	else
 	{
-		printf("彩信模块初始化失败！\n");
+		printf("彩信模块初始化成功！\n");
 	}
 
 	while (1)
@@ -179,7 +179,9 @@ int main()
 		//延时1000ms，用于控制监测实时性
 		// waitKey(1000);
 	}
+	
 	Close_MMS();
 	pthread_attr_destroy(&attr);//释放资源
+	
 	return 0;
 }
