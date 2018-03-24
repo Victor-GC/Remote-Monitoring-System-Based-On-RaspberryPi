@@ -2,4 +2,5 @@
 *.[oa]
 CMakeCache.txt
 cmake_install.cmake
+RemoteMonit
 /CMakeFiles/
