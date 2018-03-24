@@ -150,32 +150,59 @@ SMSsending.c.s:
 	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/SMSsending.c.s
 .PHONY : SMSsending.c.s
 
-face_only_rpi.o: face_only_rpi.cpp.o
+detect.o: detect.cpp.o
 
-.PHONY : face_only_rpi.o
+.PHONY : detect.o
 
 # target to build an object file
-face_only_rpi.cpp.o:
-	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/face_only_rpi.cpp.o
-.PHONY : face_only_rpi.cpp.o
+detect.cpp.o:
+	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/detect.cpp.o
+.PHONY : detect.cpp.o
 
-face_only_rpi.i: face_only_rpi.cpp.i
+detect.i: detect.cpp.i
 
-.PHONY : face_only_rpi.i
+.PHONY : detect.i
 
 # target to preprocess a source file
-face_only_rpi.cpp.i:
-	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/face_only_rpi.cpp.i
-.PHONY : face_only_rpi.cpp.i
+detect.cpp.i:
+	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/detect.cpp.i
+.PHONY : detect.cpp.i
 
-face_only_rpi.s: face_only_rpi.cpp.s
+detect.s: detect.cpp.s
 
-.PHONY : face_only_rpi.s
+.PHONY : detect.s
 
 # target to generate assembly for a file
-face_only_rpi.cpp.s:
-	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/face_only_rpi.cpp.s
-.PHONY : face_only_rpi.cpp.s
+detect.cpp.s:
+	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/detect.cpp.s
+.PHONY : detect.cpp.s
+
+main.o: main.cpp.o
+
+.PHONY : main.o
+
+# target to build an object file
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+
+.PHONY : main.i
+
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+
+.PHONY : main.s
+
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/RemoteMonit.dir/build.make CMakeFiles/RemoteMonit.dir/main.cpp.s
+.PHONY : main.cpp.s
 
 # Help Target
 help:
@@ -189,9 +216,12 @@ help:
 	@echo "... SMSsending.o"
 	@echo "... SMSsending.i"
 	@echo "... SMSsending.s"
-	@echo "... face_only_rpi.o"
-	@echo "... face_only_rpi.i"
-	@echo "... face_only_rpi.s"
+	@echo "... detect.o"
+	@echo "... detect.i"
+	@echo "... detect.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 .PHONY : help
 
 
