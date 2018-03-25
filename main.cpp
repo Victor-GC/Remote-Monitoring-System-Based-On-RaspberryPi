@@ -50,8 +50,8 @@ int main()
 	if(!MMS_init())
 	{
 		printf("彩信模块初始化失败！\n");
+		Close_MMS();
 		return 0;
-
 	}
 
 	while (1)
@@ -85,32 +85,25 @@ int main()
 			/*触发报警部分功能*/
 
 			/*短信报警部分*/
-			/*const wchar_t* phone_num = PHONE_NUM;
+			const wchar_t* phone_num = PHONE_NUM;
 			const wchar_t* send_data = L"检测到有人闯入，请注意监控区域安全！可远程查看摄像头进一步确认！";
 			if(!send_SMS(phone_num, send_data))
 			{
 				printf("发送短信失败！\n");
-			}*/
-			/*彩信报警部分*/
-			/*FILE *fp = fopen("test.jpg","r");
-			fseek(fp, 0, SEEK_END);//将文件位置指针置于文件结尾
-			int image_size = ftell(fp);
-			char* image = (char*)malloc(image_size); 
-			fseek(fp, 0, SEEK_SET);
-
-			int got_size = 0;
-			while(!feof(fp)) 
-			{
-				image[got_size] = fgetc(fp);
-				++got_size;
-
 			}
-			if(got_size -1 != image_size)
-			{
-				printf("文件大小不一致！\n");
-				printf("image_size:%d\ngot_size:%d\n", image_size, got_size);
-				return 0;
+			/*彩信报警部分*/
+			vector<int> jpg_params;//jpg图片质量参数
+			jpg_params.push_back(CV_IMWRITE_JPEG_QUALITY);
+			jpg_params.push_back(50);
+			vector<uchar> image_vec;
+			imencode(".jpg", frame, image_vec, jpg_params);//将mat转成内存中的jpg
 
+			int image_size = image_vec.size();
+			char* image = (char*)malloc(image_size); 
+
+			for(int i =0; i < image_size; ++i)
+			{
+				image[i] = image_vec[i];
 			}
 			char phone_num_mms[15];
 			memset(phone_num_mms, 0, 15);
@@ -120,8 +113,6 @@ int main()
 				printf("发送彩信失败！\n");
 			}
 			free(image);
-			fclose(fp);*/
-
 			/*报警结束后延迟1秒*/
 			sleep(1);
 			alarm_flag = 0;
