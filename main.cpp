@@ -19,8 +19,8 @@ using namespace std;
 char LOGBUF[1024];//用于记录程序错误信息并保存到本地日志
 #define PHONE_NUM L"15765545478" //监控者的电话号码，报警使用
 
-#define neighbor 4 //在一张图像中需要在连续区域检测到的次数
-#define alarm_times 5 //触发报警所需要连续检测到目标的次数
+#define NEIGHBOR 4 //在一张图像中需要在连续区域检测到的次数
+#define ALARM_TIMES 5 //触发报警所需要连续检测到目标的次数
 
 int main()
 {	
@@ -105,13 +105,13 @@ int main()
 			imwrite("./images/real_image.jpg", frame); //保存当前摄像头捕捉到的图片至当前文件夹下
 
 		//进行人脸检测
-		number_of_face = detectAndDraw( frame, cascade, 2, 0 );
+		number_of_face = detectAndDraw(frame, cascade, 2, NEIGHBOR, 0);
 
 		if (number_of_face >= 1)
 			number_of_alarm++;
 		else
 			number_of_alarm = 0;
-		if (number_of_alarm == alarm_times)
+		if (number_of_alarm == ALARM_TIMES)
 		{
 			alarm_flag = 1;
 			number_of_alarm = 0;			
