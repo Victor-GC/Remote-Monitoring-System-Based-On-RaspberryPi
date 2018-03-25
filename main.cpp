@@ -84,6 +84,7 @@ int main()
 	if(!MMS_init())
 	{
 		printf("彩信模块初始化失败！\n");
+		Close_MMS();
 		return 0;
 	}
 	else
@@ -134,7 +135,7 @@ int main()
 			jpg_params.push_back(CV_IMWRITE_JPEG_QUALITY);
 			jpg_params.push_back(50);
 			vector<uchar> image_vec;
-			imencode(".jpg", frame, image_vec);//将mat转成内存中的jpg
+			imencode(".jpg", frame, image_vec, jpg_params);//将mat转成内存中的jpg
 
 			int image_size = image_vec.size();
 			char* image = (char*)malloc(image_size); 
